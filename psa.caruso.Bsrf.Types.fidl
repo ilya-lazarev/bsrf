@@ -1,6 +1,6 @@
 package psa.caruso.Bsrf.Types
 
-typeCollection BsrfTypes {
+typeCollection Types {
   version { major 0 minor 1 }
 
   enumeration EErrorCodes {
@@ -83,4 +83,75 @@ typeCollection BsrfTypes {
     USER_ID_4 = 4
   }
 
+  enumeration EDomain {
+    DOMAIN_RECEIVER
+    DOMAIN_GNSS
+    DOMAIN_CONNECTIVITY
+    DOMAIN_PHONE_CALL
+  }
+
+  typedef UUID is String
+  typedef UID as UInt32
+  typedef Frequency as UInt32
+  typedef ProgramID as UInt32
+
+  struct BandRange {
+    Frequency min
+    Frequency max
+    Frequency manualStep
+    Frequency autoStep
+  }
+
+  struct BandInfo {
+    EBand bandType
+    BandRange range
+  }
+
+  array AvalableBands of BandInfo
+  array Capabilities of ECapability
+
+  <**
+    @description Station structure describes station information
+  **>
+  struct StationInfo {
+    UID   uid
+    UInt32 programId
+    UInt32 ensembleId
+    Frequency frequency
+    String programName
+    String ensembleName
+    UInt32 serviceIndex
+    UInt32 serviceCount
+    UInt32 programType
+    EAnnounvementType announcementType
+    Capabilities capability
+  }
+
+  <**
+      @description Maps actions (added/removed/updated) with stations
+  **>
+  Map StationChanges {
+    String to StationInfo
+  }
+  <**
+    @description List of stations
+  **>
+  struct StationList {
+    EBand band
+    UID currentStation
+    StationInfo[] stationList
+  }
+
+  <**
+    @description Program Information
+  **>
+  struct ProgramInfo extends StationInfo {
+    EBand band
+    EQuality quality
+    EHandoverState handoverState
+    UInt32 presetIndex
+    Boolean stationLost
+    String DABCodingType
+    String audioTransmission
+  }
 }

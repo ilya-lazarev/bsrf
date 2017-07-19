@@ -1,0 +1,138 @@
+package psa.caruso.Bsrf.Receiver
+import psa.caruso.Bsrf.Types.* from "psa.caruso.Bsrf.Types"
+
+<**
+  @description BSRF interface for Radio(Receiver domain)
+**>
+
+interface Receiver {
+  version { major 0 minor 1}
+
+  <**
+    @description List of avalable bands
+  **>
+  attribute AvalableBands availableBands readonly
+
+  <**
+    @description Current Program Info
+  **>
+  attribute ProgramInfo programInfo readonly
+
+  <**
+    @description Current tuner state
+  **>
+  attribute ETunerState tunerState readonly
+
+  <**
+    @description List of avalable stations in band
+  **>
+  attribute StationList stationList readonly
+
+  <**
+    @description Current frequency during search
+  **>
+  attribute Frequency searchFrequency readonly
+
+  <**
+    @description Set indication that receiver is the listened source (on speakers) or not
+  **>
+  method setOnline {
+    in {
+      <**
+        @description Whether receiver is being listened or not
+      **>
+      Boolean isOnline
+    }
+    out {
+      EErrorCodes error
+    }
+  }
+
+  <**
+    @description Set current frequency
+  **>
+  method setFrequency {
+    in {
+      <**
+        @description For analog: Hertz, for DAB: frequency index
+      **>
+      UInt32 frequency
+    }
+    out {
+      EErrorCodes error
+    }
+  }
+
+  <**
+    @description Set current station by UID
+  **>
+  method setCurrentStationByUID {
+    in {
+      <**
+        @description UID of station
+      **>
+      UID stationUID
+    }
+    out {
+      EErrorCodes error
+    }
+  }
+
+  <**
+    @description Set current band
+  **>
+  method setCurrentBand {
+    in {
+      <**
+        @description Band type
+      **>
+      EBand band
+    }
+    out {
+      EErrorCodes error
+    }
+  }
+
+  <**
+    @description Start search mode
+  **>
+  method startSearch {
+    in {
+      <**
+        @description Search mode
+      **>
+      ESearchMode searchMode
+    }
+    out {
+      EErrorCodes error
+    }
+  }
+
+  <**
+    @description Progress of station list update
+    Conti TDB
+  **>
+  broadcast listUpdateProgress {
+    out {
+      EBand band
+      UInt32 progress
+    }
+  }
+
+  <**
+    @description List of stations changed
+  **>
+  broadcast stationListChanged {
+    out {
+      <**
+        @description Band that changed
+      **>
+      EBand band
+
+      <**
+        @description Map of actions (added/removed/updated) to StationInfo
+      **>
+      StationChanges stationChanges
+    }
+  }
+}
