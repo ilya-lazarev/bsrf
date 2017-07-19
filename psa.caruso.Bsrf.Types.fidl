@@ -1,2 +1,86 @@
 package psa.caruso.Bsrf.Types
 
+typeCollection BsrfTypes {
+  version { major 0 minor 1 }
+
+  enumeration EErrorCodes {
+    ERROR_OK = 200
+    ERROR_INVALID_PARAM = 400
+    ERROR_IN_PROGRESS = 405
+    ERROR_COMMUNICATION = 500
+    ERROR_ALREADY = 1002
+    ERROR_INVALID_VALUE = 1003
+  }
+
+  enumeration ETunerState {
+    TUNER_IDLE // "IDLE"
+    TUNER_SEACHING_BAND // "SEARCHING_BAND"
+    TUNER_SEARCHING_PI // "SEARCHING_PI"
+    TUNER_SEARCHING_SCAN // "SEARCHING_SCAN"
+    TUNER_SWITCHING_BAND // "SWITCHING_BAND"
+    TUNER_LIST_UPDATE // "LIST_UPDATE"
+    TUNER_ANNOUNCEMENT_ACTIVE // "ANNOUNCEMENT_ACTIVE"
+    TUNER_TUNING // "TUNING"
+  }
+
+  enumeration ESearchMode {
+    SEARCH_ACC_DOWN // "ACC_DOWN"
+    SEARCH_ACC_UP // "ACC_UP"
+    SEARCH_SCAN // "SCAN"
+    SEARCH_DOWN // "DOWN"
+    SEARCH_UP // "UP"
+    SEARCH_CANCEL // "CANCEL"
+  }
+
+  enumeration EBand {
+    BAND_NONE // "None"
+    BAND_FM // "FM"
+    BAND_AM // "AM"
+    BAND_DAB // "DAB"
+    BAND_MW // "MW"
+    BAND_LW // "LW"
+  }
+
+  enumeration EHandoverState {
+    HANDOVER_NOT_ACTIVE // "NOT_ACTIVE"
+    HANDOVER_DAB_TO_FM // "DAB_TO_FM"
+  }
+
+  enumeration EQuality {
+    QUALITY_VERY_LOW // "Very low"
+    QUALITY_LOW // "Low"
+    QUALITY_Medium // "Medium"
+    QUALITY_GOOD // "Good"
+    QUALITY_EXCELLENT // "Excellent"
+  }
+
+  enumeration EAnnounvementType {
+    ANNOUNCEMENT_ALARM // "AlARM"
+    ANNOUNCEMENT_ROAD_TRAFFIC_FLASH // "Road Traffic flash"
+    ANNOUNCEMENT_TRANSPORT_FLASH // "Transport flash"
+    ANNOUNCEMENT_WARNING_SERVICE // "Warning/Service"
+    ANNOUNCEMENT_NEWS_FLASH // "News flash"
+    ANNOUNCEMENT_AREA_WEATHER_FLASH // "Area weather flash"
+    ANNOUNCEMENT_EVENT // "Event announcement"
+    ANNOUNCEMENT_SPECIAL_EVENT // "Special event"
+    ANNOUNCEMENT_PROGRAM_INFORMATION // "Program information"
+    ANNOUNCEMENT_SPORT_REPORT // "Sport report"
+    ANNOUNCEMENT_FINANCIAL_REPORT // "Financial report"
+  }
+
+  enumeration ECapability {
+    CAPABILITY_AF // "AF"
+    CAPABILITY_RT_DLS // "RT/DLS"
+    CAPABILITY_EPG // "EPG"
+    CAPABILITY_JOURNALINE // "Journaline"
+    CAPABILITY_HANDOVER // "Handover"
+  }
+
+  enumeration EUserID {
+    USER_ID_1 = 1
+    USER_ID_2 = 2
+    USER_ID_3 = 3
+    USER_ID_4 = 4
+  }
+
+}
