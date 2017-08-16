@@ -1,0 +1,410 @@
+package psa.caruso.Radio
+
+
+<**
+	@description :
+    The interface defines radio application IF to HMU provided by BSRF via webSocket.
+
+    Copyright (C) 2017 HARMAN Connected Services
+    All rights reserved
+
+    History
+    rev. date		by	ver	description
+    1	26.07.17	ASB	1.0	initial version for radio application
+	2   01.08.17    ASB 1.0 initial update for radio application
+**>
+interface RadioI {
+	version {
+		major 1
+		minor 0
+	}
+
+  <**
+    @description : List of error codes supported by BSRF
+  **>
+
+  enumeration EErrorCodes{
+    INVALID               = 0
+    SUCCESS               = 200
+    OUT_OF_BOUNDS         = 400
+    IN_PROGRESS           = 405
+    COMMUNICATION_ERROR   = 500
+    ALREADY_ACTIVE        = 1002
+    UNSUPPORTED_PARAMETER = 1003
+    MAXENUMVAL			  = 10000
+  }
+
+  <**
+    @description : List of bands supported by BSRF
+  **>
+
+  enumeration EBands{
+    NONE = 1
+    FM
+    AM
+    DAB
+    MW
+    LW
+    MAXENUMVAL
+  }
+
+  <**
+    @description : List of Tuner States supported by BSRF
+  **>
+
+  enumeration ETunerStates{
+      IDLE
+      SEARCHING_BAND
+      SEARCHING_PI
+      SEARCHING_SCAN
+      SWITCHING_BAND
+      LIST_UPDATE
+      ANNOUCEMENT_ACTIVE
+      TUNING
+    }
+
+  <**
+    @description : List of Announcements BSRF provides
+  **>
+  enumeration EAnnouncementType{
+    INVALID = 0
+    ALARM
+    ROAD_TRAFFIC_FLASH
+    TRANSPORT_FLASH
+    WARNING_SERVICE
+    NEWS_FLASH
+    AREA_WEATHER_FLASH
+    EVENT_ANNOUNCEMENT
+    SPECIAL_EVENT
+    PROGRAM_INFORMATION
+    SPORT_REPORT
+    FINANCIAL_REPORT
+    MAXENUMVAL
+  }
+  <**
+    @description : List of station capabilities BSRF provides
+  **>
+  enumeration ECapabilityType{
+    INVALID = 0
+    AF
+    RT_DLS
+    EPG
+    JOURNALINE
+    HANDOVER
+    MAXENUMVAL
+  }
+
+  <**
+    @description : Struct of handover states used by BSRF
+  **>
+  enumeration EHandoverState{
+    INVALID = 0
+    NOT ACTIVE
+    DAB_TO_FM
+    FM_TO_DAB
+    MAXENUMVAL
+  }
+
+  <**
+    @description : Struct of booleans used in radio application
+  **>
+  enumeration ETrueFalse{
+    INVALID = 0
+    TRUE
+    FALSE
+    MAXENUMVAL
+  }
+
+  <**
+    @description : Struct of activation states used in radio application
+  **>
+  
+    enumeration EApplicationState{
+    INVALID = 0
+    ACTIVE
+    INACTIVE
+    MAXENUMVAL
+  }
+
+  <**
+    @description : Struct of stations used in radio application
+  **>
+  struct SStationEntry
+  {
+    UInt16  UID
+    EBands band
+    String programId
+    String ensembleId
+    UInt32 frequency
+    String stationName
+    String stableProgramName
+    String ensembleName
+    UInt16 serviceIndex
+    UInt16 serviceCount
+    UInt16 programType
+    String quality
+    EAnnouncementType annoucementType
+    ECapabilityType capability
+  }
+
+
+  <**
+    @description : Struct of SPresetList struct for the preset stations stored in BSRF
+  **>
+
+  struct SPresetList
+  {
+    UInt8 size
+    SStationEntry[] stations
+  }
+  
+  
+  <**
+    @description : Struct of SProgramInfo struct for the stations info in BSRF
+  **>
+
+  struct SProgramInfo
+  {
+    UInt16  UID
+    EBands band
+    String programId
+    String ensembleId
+    UInt32 frequency
+    String programName
+    String ensembleName
+    UInt16 programType
+    UInt16 ECC
+    String quality
+    ECapabilityType capability
+    EAnnouncementType announcementType
+    EHandoverState handoverState
+    UInt16 presetIndex
+    ETrueFalse stationLost
+    String DABCodingType
+    String audioTransmission
+  }
+
+  
+  <**
+    @description : eventPresetList fired by Radio presentation Controller to inform Resetlist requested
+  **>
+
+  broadcast presetListUpdate{
+    out{
+      SPresetList presetList
+    }
+  }
+
+  <**
+    @description : startAutoStoreUpdate called by Radio HMI
+  **>
+
+    method startAutoStoreUpdate{
+      in {
+        EBands band
+      }
+    }
+
+  <**
+    @description : autoStoreUpdateStarted fired to update preset list requested
+  **>
+
+  broadcast autoStoreUpdateStarted{
+    out{
+      EBands band
+    }
+  }
+
+  <**
+  @description : autoStoreUpdateProgress fired to update preset list progress
+  **>
+
+  broadcast autoStoreUpdateProgress{
+    out{
+      UInt8  percentage
+    }
+  }
+
+
+  <**
+    @description : autoStoreUpdateComplete reply of the AutoStoreUpdate
+  **>
+
+  broadcast autoStoreUpdateComplete{
+    out{
+      EErrorCodes Error
+    }
+  }
+    <**
+      @description : cancelAutoStoreUpdate called by Radio HMI to stop station update
+    **>
+
+    method cancelAutoStoreUpdate{
+      in {}
+    }
+
+  <**
+    @description : autoStoreUpdateCancelComplete reply of the AutoStoreUpdate cancel
+  **>
+
+  broadcast autoStoreUpdateCancelComplete{
+    out{
+      EErrorCodes Error
+    }
+  }
+	
+    <**
+      @description : startStationListUpdate called by Radio HMI
+    **>
+
+      method startStationListUpdate{
+        in {
+          EBands band
+        }
+      }
+
+	 <**
+		@description : stationListUpdateStarted fired to informabout stationlist update
+	  **>
+	  broadcast stationListUpdateStarted{
+		out{
+		  EBands band
+		}
+	  }
+
+	   <**
+	  @description : stationListProgressUpdate fired to update preset list progress
+	  **>
+
+	  broadcast stationListProgressUpdate{
+		out{
+		  UInt8  percentage
+		}
+	  }
+	  
+	  <**
+		@description : stationListChangedUpdate fired to update the station list in HMI
+	  **>
+
+	  broadcast stationListChangedUpdate{
+		out{
+		  EBands band
+		  SStationEntry added
+		  SStationEntry updated
+		  UInt16[] removed
+		}
+	  }
+	  
+   <**
+      @description : cancelStationListUpdate called by Radio HMI to stop station update
+    **>
+      method cancelStationListUpdate{
+        in  {}
+      }
+ 
+  <**
+    @description : stationListUpdateCancelComplete reply of the StationListUpdate cancel
+  **>
+
+  broadcast stationListUpdateCancelComplete{
+    out{
+      EErrorCodes Error
+    }
+  }
+
+
+
+
+  <**
+    @description : stationListUpdateComplete reply of the StationListUpdate
+  **>
+
+  broadcast stationListUpdateComplete{
+    out{
+      EErrorCodes Error
+    }
+  }
+ 
+  <**
+    @description : startTuneStationListItem reply of tune station
+  **>
+	method startTuneStationListItem{
+        in  {
+		  EBands band
+		  UInt16  UID
+		}
+	}
+
+	<**
+    @description : tuneStationListItemStarted reply of tune station request
+    **>
+
+  broadcast tuneStationListItemStarted{
+    out{
+      EBands band
+      UInt16  UID
+    }
+  }
+  
+  <**
+    @description : tunerStateUpdate reply of tune station
+  **>
+  broadcast tunerStateUpdate{
+    out{
+      ETunerStates tunerState
+    }
+  }
+
+
+  
+  <**
+    @description : programInfoUpdate reply of tune station
+  **>
+  broadcast programInfoUpdate{
+    out{
+      SProgramInfo programInfo
+    }
+  }
+
+
+ <**
+    @description : tuneStationListItemComplete sent to end the tune HMI
+  **>
+
+  broadcast tuneStationListItemComplete{
+    out{
+      EErrorCodes Error
+    }
+  }
+
+  
+ <**
+    @description : stationLostUpdate sent to showa popup
+  **>
+
+  broadcast stationLostUpdate{
+    out{
+      EBands band
+      UInt16  UID
+    }
+  }
+  
+    <**
+    @description : startApplicationState reply of tune station
+    **>
+	method startApplicationState{
+        in  {
+			EApplicationState State
+		}
+	}
+
+	<**
+    @description : applicationStateStarted reply of tune station request
+    **>
+
+  broadcast applicationStateStarted{
+    out{
+			EApplicationState State
+    }
+  }
+}
