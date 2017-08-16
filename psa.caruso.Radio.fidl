@@ -35,6 +35,20 @@ interface RadioI {
   }
 
   <**
+    @description : Search mode
+  **>
+  
+  enumeration ESearchMode {
+    ACC_DOWN // "ACC_DOWN"
+    ACC_UP // "ACC_UP"
+    SCAN // "SCAN"
+    DOWN // "DOWN"
+    UP // "UP"
+    CANCEL // "CANCEL"
+	MAXENUMVAL
+  }
+
+  <**
     @description : List of bands supported by BSRF
   **>
 
@@ -106,29 +120,47 @@ interface RadioI {
   }
 
   <**
-    @description : Struct of booleans used in radio application
-  **>
-  enumeration ETrueFalse{
-    INVALID = 0
-    TRUE
-    FALSE
-    MAXENUMVAL
-  }
-
-  <**
     @description : Struct of activation states used in radio application
   **>
   
-    enumeration EApplicationState{
+  enumeration EApplicationState{
     INVALID = 0
     ACTIVE
     INACTIVE
     MAXENUMVAL
   }
 
+  typedef UID as UInt32
+  typedef Frequency as UInt32
+  typedef ProgramID as UInt32
+
+  <**
+    @description : Band range
+  **>
+  struct SBandRange {
+    Frequency min
+    Frequency max
+    Frequency manualStep
+    Frequency autoStep
+  }
+
+  <**
+    @description : Band information
+  **>
+  struct SBandInfo {
+    EBands type
+    BandRange range
+  }
+
+  <**
+    @description : List of available bands; type
+  **>
+  array AvailableBands of SBandInfo
+  
   <**
     @description : Struct of stations used in radio application
   **>
+  
   struct SStationEntry
   {
     UInt16  UID
@@ -158,7 +190,6 @@ interface RadioI {
     SStationEntry[] stations
   }
   
-  
   <**
     @description : Struct of SProgramInfo struct for the stations info in BSRF
   **>
@@ -179,16 +210,34 @@ interface RadioI {
     EAnnouncementType announcementType
     EHandoverState handoverState
     UInt16 presetIndex
-    ETrueFalse stationLost
+    Boolean stationLost
     String DABCodingType
     String audioTransmission
   }
 
+  <**
+    @description : Set current band
+  **>
+  method setCurrentBand {
+    in {
+	  EBands band
+	}
+  }
   
+  <**
+    @description : availableBandsChanged fired by Radio presentation Controller to inform bands changes
+  **>
+  
+  broadcast availableBandsUpdate {
+    out {
+	  AvailableBands bands
+	}
+  }
+
   <**
     @description : eventPresetList fired by Radio presentation Controller to inform Resetlist requested
   **>
-
+  
   broadcast presetListUpdate{
     out{
       SPresetList presetList
@@ -199,11 +248,11 @@ interface RadioI {
     @description : startAutoStoreUpdate called by Radio HMI
   **>
 
-    method startAutoStoreUpdate{
-      in {
-        EBands band
-      }
+  method startAutoStoreUpdate{
+    in {
+      EBands band
     }
+  }
 
   <**
     @description : autoStoreUpdateStarted fired to update preset list requested
@@ -235,72 +284,72 @@ interface RadioI {
       EErrorCodes Error
     }
   }
-    <**
-      @description : cancelAutoStoreUpdate called by Radio HMI to stop station update
-    **>
+  <**
+    @description : cancelAutoStoreUpdate called by Radio HMI to stop station update
+  **>
 
-    method cancelAutoStoreUpdate{
-      in {}
-    }
+  method cancelAutoStoreUpdate{
+    in {}
+  }
 
   <**
-    @description : autoStoreUpdateCancelComplete reply of the AutoStoreUpdate cancel
+	@description : autoStoreUpdateCancelComplete reply of the AutoStoreUpdate cancel
   **>
 
   broadcast autoStoreUpdateCancelComplete{
-    out{
-      EErrorCodes Error
-    }
+	out{
+	  EErrorCodes Error
+	}
   }
 	
-    <**
-      @description : startStationListUpdate called by Radio HMI
-    **>
+  <**
+    @description : startStationListUpdate called by Radio HMI
+  **>
 
-      method startStationListUpdate{
-        in {
-          EBands band
-        }
-      }
+  method startStationListUpdate{
+    in {
+      EBands band
+    }
+  }
 
-	 <**
-		@description : stationListUpdateStarted fired to informabout stationlist update
-	  **>
-	  broadcast stationListUpdateStarted{
-		out{
-		  EBands band
-		}
-	  }
+  <**
+	@description : stationListUpdateStarted fired to informabout stationlist update
+  **>
+  broadcast stationListUpdateStarted{
+	out{
+	  EBands band
+	}
+  }
 
-	   <**
-	  @description : stationListProgressUpdate fired to update preset list progress
-	  **>
+  <**
+	@description : stationListProgressUpdate fired to update preset list progress
+  **>
 
-	  broadcast stationListProgressUpdate{
-		out{
-		  UInt8  percentage
-		}
-	  }
+  broadcast stationListProgressUpdate{
+	out{
+	  UInt8  percentage
+	}
+  }
 	  
-	  <**
-		@description : stationListChangedUpdate fired to update the station list in HMI
-	  **>
+  <**
+	@description : stationListChangedUpdate fired to update the station list in HMI
+  **>
 
-	  broadcast stationListChangedUpdate{
-		out{
-		  EBands band
-		  SStationEntry added
-		  SStationEntry updated
-		  UInt16[] removed
-		}
-	  }
+  broadcast stationListChangedUpdate{
+	out{
+	  EBands band
+	  SStationEntry added
+	  SStationEntry updated
+	  UInt16[] removed
+	}
+  }
 	  
-   <**
-      @description : cancelStationListUpdate called by Radio HMI to stop station update
-    **>
-      method cancelStationListUpdate{
-        in  {}
-      }
+  <**
+    @description : cancelStationListUpdate called by Radio HMI to stop station update
+  **>
+  method cancelStationListUpdate{
+    in  {}
+  }
  
   <**
     @description : stationListUpdateCancelComplete reply of the StationListUpdate cancel
@@ -311,9 +360,6 @@ interface RadioI {
       EErrorCodes Error
     }
   }
-
-
-
 
   <**
     @description : stationListUpdateComplete reply of the StationListUpdate
@@ -328,16 +374,16 @@ interface RadioI {
   <**
     @description : startTuneStationListItem reply of tune station
   **>
-	method startTuneStationListItem{
-        in  {
-		  EBands band
-		  UInt16  UID
-		}
+  method startTuneStationListItem{
+    in  {
+	  EBands band
+	  UInt16  UID
 	}
+  }
 
-	<**
+  <**
     @description : tuneStationListItemStarted reply of tune station request
-    **>
+  **>
 
   broadcast tuneStationListItemStarted{
     out{
@@ -366,45 +412,66 @@ interface RadioI {
     }
   }
 
-
- <**
-    @description : tuneStationListItemComplete sent to end the tune HMI
+  <**
+	@description : tuneStationListItemComplete sent to end the tune HMI
   **>
 
   broadcast tuneStationListItemComplete{
-    out{
-      EErrorCodes Error
-    }
-  }
-
-  
- <**
-    @description : stationLostUpdate sent to showa popup
-  **>
-
-  broadcast stationLostUpdate{
-    out{
-      EBands band
-      UInt16  UID
-    }
-  }
-  
-    <**
-    @description : startApplicationState reply of tune station
-    **>
-	method startApplicationState{
-        in  {
-			EApplicationState State
-		}
+	out{
+	  EErrorCodes Error
 	}
+  }
+  
+  <**
+    @description : startApplicationState reply of tune station
+  **>
+  method startApplicationState{
+    in  {
+	  EApplicationState State
+	}
+  }
 
-	<**
+  <**
     @description : applicationStateStarted reply of tune station request
-    **>
+  **>
 
   broadcast applicationStateStarted{
     out{
-			EApplicationState State
+	  EApplicationState State
     }
+  }
+  
+  <**
+    @description : Start search with specified mode
+  **>
+  method startSearch {
+    in {
+	  ESearchMode mode
+	}
+  }
+  
+  <**
+    @description : Notifies HMI about current search frequency
+  **>
+  broadcast searchFrequencyUpdate {
+    out {
+	  Frequency frequency
+	}
+  }
+
+  <**
+    @description : Cancel search(i.e. mode == CANCEL)
+  **>
+  method cancelSearch {
+    in {}
+  }
+  
+  <**
+    @description : Set current frequency to specified
+  **>
+  method setFrequency {
+    in {
+	  Frequency frequency
+	}
   }
 }
