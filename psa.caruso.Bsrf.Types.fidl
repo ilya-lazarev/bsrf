@@ -54,7 +54,7 @@ typeCollection Types {
     QUALITY_EXCELLENT // "Excellent"
   }
 
-  enumeration EAnnounvementType {
+  enumeration EAnnouncementType {
     ANNOUNCEMENT_ALARM // "AlARM"
     ANNOUNCEMENT_ROAD_TRAFFIC_FLASH // "Road Traffic flash"
     ANNOUNCEMENT_TRANSPORT_FLASH // "Transport flash"
@@ -90,7 +90,7 @@ typeCollection Types {
     DOMAIN_PHONE_CALL
   }
 
-  typedef UUID is String
+  typedef UUID as String
   typedef UID as UInt32
   typedef Frequency as UInt32
   typedef ProgramID as UInt32
@@ -107,7 +107,7 @@ typeCollection Types {
     BandRange range
   }
 
-  array AvalableBands of BandInfo
+  array AvailableBands of BandInfo
   array Capabilities of ECapability
 
   <**
@@ -123,7 +123,7 @@ typeCollection Types {
     UInt32 serviceIndex
     UInt32 serviceCount
     UInt32 programType
-    EAnnounvementType announcementType
+    EAnnouncementType announcementType
     Capabilities capability
   }
 
