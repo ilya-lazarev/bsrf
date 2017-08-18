@@ -130,9 +130,9 @@ interface RadioI {
     MAXENUMVAL
   }
 
-  typedef UID as UInt32
-  typedef Frequency as UInt32
-  typedef ProgramID as UInt32
+  typedef UID is UInt32
+  typedef Frequency is UInt32
+  typedef ProgramID is UInt32
 
   <**
     @description : Band range
@@ -149,7 +149,7 @@ interface RadioI {
   **>
   struct SBandInfo {
     EBands type
-    BandRange range
+    SBandRange range
   }
 
   <**
@@ -167,7 +167,7 @@ interface RadioI {
     EBands band
     String programId
     String ensembleId
-    UInt32 frequency
+    Frequency frequency
     String stationName
     String stableProgramName
     String ensembleName
@@ -200,7 +200,7 @@ interface RadioI {
     EBands band
     String programId
     String ensembleId
-    UInt32 frequency
+    Frequency frequency
     String programName
     String ensembleName
     UInt16 programType
